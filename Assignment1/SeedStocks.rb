@@ -7,8 +7,8 @@ class SeedStocks
   attr_accessor :last_planted #Last planted date
   attr_accessor :storage #Storage
   attr_accessor :grams #Grams remaining
+  attr_accessor :gene #Gene object with the same id
   @@my_stocks = [] #Array with all the objects of the class
-  @gene = nil #Gene object with the same id
     
   def initialize (params = {})
     @seed_stock = params.fetch(:seed_stock,'Unknown seed stock')
@@ -19,7 +19,8 @@ class SeedStocks
     
     #Assign the Gene object with the same id to the variable @gene.
     #If there is no Gene object with that id the code stops
-    @gene = Gene.all_genes.find { |gen| gen.id == @id } 
+    @gene = Gene.all_genes.find { |gen| gen.id == @id }
+    
     if @gene == nil
       abort ("Gene #{@id} associated to seed stock #{@seed_stock} is not registered")
     end
@@ -28,20 +29,16 @@ class SeedStocks
     
   end
 
-  def gene
-    return @gene
-  end
-
   def plant(some_grams)
     #Substrats some_grams to the grams remaining and updates the date.
-    @grams = @grams - some_grams
-    @last_planted = Time.now.strftime("%d/%m/%Y")
-	  
-	  #If the amount of seed is reduced to zero prints a warning message
-	  if @grams <= 0
+    #If the amount of seed is reduced to zero prints a warning message
+		if @grams <= 7
       @grams = 0
       puts "WARNING: we have run out of Seed Stock #{@seed_stock}"
+    else
+      @grams = @grams - some_grams
     end
+    @last_planted = Time.now.strftime("%d/%m/%Y")
   end
   
   def SeedStocks.load_from_file(file_name)

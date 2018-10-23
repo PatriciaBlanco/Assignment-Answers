@@ -8,9 +8,9 @@ class HybridCross
   attr_accessor :f2_p1 #F2 parent 1 phenotype
   attr_accessor :f2_p2 #F2 parent 2 phenotype
   attr_accessor :f2_p1p2 #F2 parent 1 and parent 2 phenotype
-  @seed1 = nil #Parent 1 seedstock object
-  @seed2 = nil #Parent 2 seedstock object
-  @chi = nil #Chisquare value for the cross
+  attr_accessor :seed1 #Parent 1 seedstock object
+  attr_accessor :seed2 #Parent 2 seedstock object
+  attr_accessor :chi #Chisquare value for the cross
   @@my_crosses = [] #Array with all the objects in the class
   
   def initialize (params = {})
@@ -32,6 +32,8 @@ class HybridCross
     if @seed2 == nil
       abort ("The seed stock #{@p2} is not registered")
     end
+    
+    @chi = nil
     
     @@my_crosses << self #Add the new object to the array
     
@@ -60,7 +62,7 @@ class HybridCross
    total = @f2_wild + @f2_p1 + @f2_p2 + @f2_p1p2
    #chisquare = sum((Observed-Expected)²/Expected)
    @chi = (@f2_wild - total*9/16)**2/(total*9/16) + (@f2_p1 - total*3/16)**2/(total*3/16) + (@f2_p2 - total*3/16)**2/(total*3/16) + (@f2_p1p2 - total*1/16)**2/(total*1/16)
-   if @chi >= 7.81 #chi distribution value to be considered statistically significant (p<0.05, 3 degrees of freedom)
+   if @chi >= 3.84 #chi distribution value to be considered statistically significant (p<0.05)
      puts "Recording: #{@seed1.gene.name} is genetically linked to #{@seed2.gene.name} with chisquare score #{@chi}"
      @seed1.gene.linked = @seed2.gene
      @seed2.gene.linked = @seed1.gene

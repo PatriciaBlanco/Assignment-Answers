@@ -34,7 +34,7 @@ end
 #Bonus: Function to access individual SeedStock objects based on their ID
 #puts SeedStocks.get_seed_stock("A334").inspect
 
-#Final report. If the gene is ligated to other gene prints the message
+#Final report. If the gene is linked to other gene prints the message
 puts "\n\nFinal report\n\n"
 Gene.all_genes.each do |gen|
 	puts "#{gen.name} is linked to #{gen.linked.name}" unless gen.linked == nil

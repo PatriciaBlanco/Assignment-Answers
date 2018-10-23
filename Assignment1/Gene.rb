@@ -3,8 +3,9 @@ class Gene
   attr_accessor :id #gene id
   attr_accessor :name #gene name
   attr_accessor :mutant #mutant phenotype
+  attr_accessor :linked #gene object to which it is linked
   @@my_genes = [] #array with all gene objects
-  @linked = nil #gene object to which it is linked
+   
   
   def initialize (params = {})
     @id = params.fetch(:id, "000")
@@ -14,6 +15,7 @@ class Gene
     end
     @name = params.fetch(:name,'Unknown name')
     @mutant = params.fetch(:mutant, 'Unknown phenotype')
+    @linked = nil
     #Add the new object to the array
     @@my_genes << self
   end
@@ -33,15 +35,5 @@ class Gene
     else
       abort ("Couldn't find the file #{file_name}") #If the file doesn't exist stops the program
     end
-  end
-
-  
-  def linked
-    return @linked
-  end
-  
-  def linked=(newvalue)
-    @linked = newvalue
-  end
-  
+  end  
 end
