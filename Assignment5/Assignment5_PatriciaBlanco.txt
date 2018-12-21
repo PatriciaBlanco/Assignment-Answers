@@ -8,7 +8,6 @@
 ##===========================================================================
 
 ## 1. (1 POINT) How many protein records are in UniProt?
-## result: 223102577
 
 PREFIX up:<http://purl.uniprot.org/core/> 
 
@@ -20,7 +19,6 @@ WHERE
 
 
 ## 2. (1 POINT) How many Arabidopsis thaliana protein records are in UniProt? 
-## result: 89247
 
 PREFIX up:<http://purl.uniprot.org/core/> 
 PREFIX taxon:<http://purl.uniprot.org/taxonomy/> 
@@ -35,7 +33,6 @@ WHERE
 
 ## 3. (1 POINT) What is the description of the enzyme activity of UniProt Protein Q9SZZ8
 
-
 PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> 
 PREFIX up:<http://purl.uniprot.org/core/>
 PREFIX uniprotkb:<http://purl.uniprot.org/uniprot/>
@@ -45,21 +42,20 @@ SELECT ?name ?comment ?reaction ?activity
 WHERE
 {
 	uniprotkb:Q9SZZ8 a up:Protein .
-  
+	
 	uniprotkb:Q9SZZ8 up:annotation  ?annotation . 
-    ?annotation a up:Function_Annotation .
-    ?annotation rdfs:comment ?comment .
-  
+	?annotation a up:Function_Annotation .
+	?annotation rdfs:comment ?comment .
+	
 	uniprotkb:Q9SZZ8 up:enzyme ?enzyme .
-    ?enzyme skos:prefLabel ?name .
-  	?enzyme up:activity ?activity .
-  	?activity rdfs:label ?reaction .
+	?enzyme skos:prefLabel ?name .
+	?enzyme up:activity ?activity .
+	?activity rdfs:label ?reaction .
 }
 
 
 ## 4. (1 POINT) Retrieve the proteins ids, and date of submission, for proteins that have been added
 ## to UniProt this year
-
 
 PREFIX up:<http://purl.uniprot.org/core/> 
 
@@ -68,14 +64,12 @@ WHERE
 {
 	?protein a up:Protein . 
 	?protein up:created ?date .
-    BIND (SUBSTR(STR(?protein),33) AS ?id)
-    FILTER (?date >= '2018-01-01'^^xsd:date)
+	BIND (SUBSTR(STR(?protein),33) AS ?id)
+	FILTER (?date >= '2018-01-01'^^xsd:date)
 }
 
 
 ## 5. (1 POINT) How many species are in the UniProt taxonomy?
-## result: 1601900
-
 
 PREFIX up:<http://purl.uniprot.org/core/> 
  
@@ -88,8 +82,6 @@ WHERE
 
 
 ## 6. (1 POINT) How many species have at least one protein record?
-## result: 833130
-
 
 PREFIX up:<http://purl.uniprot.org/core/> 
 
@@ -99,7 +91,7 @@ WHERE
 	?protein a up:Protein .
 	?protein up:organism ?species .
 	?species a up:Taxon .
-    ?species up:rank up:Species .
+	?species up:rank up:Species .
 }
 
 
@@ -109,8 +101,6 @@ WHERE
 
 
 ## 7. (1 POINT) What is the Affymetrix probe ID for the Arabiodopsis Apetala3 gene?
-## result: 251898_at
-
 
 PREFIX atlasterms: <http://rdf.ebi.ac.uk/terms/expressionatlas/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -121,30 +111,29 @@ PREFIX efo: <http://www.ebi.ac.uk/efo/>
 SELECT DISTINCT ?genename ?probeid
 WHERE
 {
-  	SERVICE<http://sparql.uniprot.org/sparql> 
-    {
-      	?protein a up:Protein . 
+	SERVICE<http://sparql.uniprot.org/sparql> 
+	{
+		?protein a up:Protein . 
 		?protein up:organism taxon:3702 . 
-    	?protein up:recommendedName ?name . 
+		?protein up:recommendedName ?name . 
 		?name up:fullName ?full . 
-      	?protein up:encodedBy ?gene .
+		?protein up:encodedBy ?gene .
 		?gene a up:Gene .
-      	?gene up:locusName ?genename .
-      	FILTER CONTAINS( ?full, 'APETALA 3') . 
-    }
-           
+		?gene up:locusName ?genename .
+		FILTER CONTAINS( ?full, 'APETALA 3') . 
+	}
+	
 	BIND (URI(CONCAT ("http://rdf.ebi.ac.uk/resource/ensembl/", UCASE(STR(?genename)))) AS ?newuri)
-  	?array atlasterms:refersTo ?newuri .
-    ?array atlasterms:refersTo ?ref .
+	?array atlasterms:refersTo ?newuri .
+	?array atlasterms:refersTo ?ref .
 	?ref a efo:EFO_0005072 .
-  	?ref rdfs:label ?probeid .    
+	?ref rdfs:label ?probeid .    
 }  
 
 
 
 ## 8. (3 POINTS) - get the experimental description for all experiments where the Arabidopsis Apetala3
 ## gene is DOWN regulated
-
 
 PREFIX atlasterms: <http://rdf.ebi.ac.uk/terms/expressionatlas/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -156,27 +145,27 @@ SELECT DISTINCT ?description ?tstat #?analysis
 
 WHERE
 {
-  	SERVICE<http://sparql.uniprot.org/sparql> 
+	SERVICE<http://sparql.uniprot.org/sparql> 
     {
-      	?protein a up:Protein . 
+		?protein a up:Protein . 
 		?protein up:organism taxon:3702 . 
-    	?protein up:recommendedName ?name . 
+		?protein up:recommendedName ?name . 
 		?name up:fullName ?full . 
-      	?protein up:encodedBy ?gene .
+		?protein up:encodedBy ?gene .
 		?gene a up:Gene .
-      	?gene up:locusName ?genename .
-      	FILTER CONTAINS( ?full, 'APETALA 3') . 
-    }
-     
+		?gene up:locusName ?genename .
+		FILTER CONTAINS( ?full, 'APETALA 3') . 
+	}
+	
 	BIND (URI(CONCAT ("http://rdf.ebi.ac.uk/resource/ensembl/", UCASE(STR(?genename)))) AS ?newuri)
 
-    ?exp atlasterms:refersTo ?newuri .
-  	?exp atlasterms:tStatistic ?tstat .
-  	?exp atlasterms:isOutputOf ?analysis .
-  	
-  	?analysis rdfs:label ?description .
+	?exp atlasterms:refersTo ?newuri .
+	?exp atlasterms:tStatistic ?tstat .
+	?exp atlasterms:isOutputOf ?analysis .
+	
+	?analysis rdfs:label ?description .
 
-  	FILTER(?tstat < -3)  
+	FILTER(?tstat < -3)  
 }
 
 ## Both of the two previous queries (7 and 8) would be easier and faster if we search using gene id
@@ -192,12 +181,12 @@ SELECT DISTINCT ?description ?tstat #?analysis
 WHERE
 {
 
-    ?exp atlasterms:refersTo gene:AT3G54340 .
-  	?exp atlasterms:tStatistic ?tstat .
-  	?exp atlasterms:isOutputOf ?analysis .
-  	?analysis rdfs:label ?description .
+	?exp atlasterms:refersTo gene:AT3G54340 .
+	?exp atlasterms:tStatistic ?tstat .
+	?exp atlasterms:isOutputOf ?analysis .
+	?analysis rdfs:label ?description .
 
-  	FILTER(?tstat < -3).
+	FILTER(?tstat < -3).
 } 
 
 
@@ -232,8 +221,8 @@ WHERE
   
 	?xref biopax3:db ?db . 
 	?xref biopax3:id ?id . 
-  	?xref biopax3:title ?title
-          
+	?xref biopax3:title ?title
+
 	FILTER(str(?name) = "Degradation of the extracellular matrix")
 	FILTER(str(?db) = "Pubmed")  
 }
@@ -256,18 +245,18 @@ PREFIX skos:<http://www.w3.org/2004/02/skos/core#>
 SELECT ?agicode ?name #?annotation
 WHERE
 {
-    ?protein a up:Protein .
-    ?protein up:organism taxon:3702 .
-    ?protein up:encodedBy ?gene . 
-  	?protein up:annotation  ?annotation . 
+	?protein a up:Protein .
+	?protein up:organism taxon:3702 .
+	?protein up:encodedBy ?gene . 
+	?protein up:annotation  ?annotation . 
 	
-    ?annotation a up:Function_Annotation . 
-    ?annotation rdfs:comment ?annot_comment . 
+	?annotation a up:Function_Annotation . 
+	?annotation rdfs:comment ?annot_comment . 
 	
 	?gene up:locusName ?agicode . 
-    ?gene skos:prefLabel ?name . 
-    
-    FILTER CONTAINS(str(?annot_comment), 'pattern formation')      
+	?gene skos:prefLabel ?name . 
+
+	FILTER CONTAINS(str(?annot_comment), 'pattern formation')      
 }
 
 
@@ -283,17 +272,17 @@ PREFIX taxon: <http://identifiers.org/taxonomy/>
 SELECT (COUNT (?term1) AS ?countall) (COUNT (?term2) AS ?countelectronic)
 WHERE
 {
-    ?pathway a biopax3:Pathway .
-    ?pathway biopax3:organism taxon:3702 . 
-    ?pathway biopax3:evidence ?evidence1 .  
+	?pathway a biopax3:Pathway .
+	?pathway biopax3:organism taxon:3702 . 
+	?pathway biopax3:evidence ?evidence1 .  
 	?pathway biopax3:evidence ?evidence2 .
 	
-    ?evidence1 biopax3:evidenceCode ?evidenceCode1 .
-    ?evidence2 biopax3:evidenceCode ?evidenceCode2 .
+	?evidence1 biopax3:evidenceCode ?evidenceCode1 .
+	?evidence2 biopax3:evidenceCode ?evidenceCode2 .
 	
-    ?evidenceCode1 biopax3:term ?term1 . 
-    ?evidenceCode2 biopax3:term ?term2 .
+	?evidenceCode1 biopax3:term ?term1 . 
+	?evidenceCode2 biopax3:term ?term2 .
 	
-    FILTER (CONTAINS (str(?term2), 'inferred from electronic annotation')) .
+	FILTER (CONTAINS (str(?term2), 'inferred from electronic annotation')) .
 }
 
