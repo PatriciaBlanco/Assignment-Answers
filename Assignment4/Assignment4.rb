@@ -2,21 +2,21 @@
 #
 # Find orthologs searching Reciprocal Best Hits (RBH) with BLAST
 #
-# Ortholog genes are defined as genes that are found in different species that evolved from a common
+# Ortholog genes are those genes that are found in different species and have evolved from a common
 # ancestral gene by speciation. One of the first approaches to detect ortologs is finding RBH. This
-# program makes a BLAST using the queries from a genome or proteome against another genome or proteome
-# database. After that, it makes another BLAST with the best hits against the first proteome. If they
+# program runs BLAST using the queries from a genome or proteome against another genome or proteome
+# database. After that, it runs BLAST with the best hits obtained against the first proteome. If they
 # are reciprocal, they are probably orthologs.
 #
-# To make the BLAST I have used the following parameters: e-value <= 10e-10, overlapping >= 50% and
-# identity >= 30%. I have read that the e-value depends on the similarity between the organisms and
-# on the size of the database. The lower e-value, the more significant is the alignment. Some of the
-# papers I read use higher e-value threshold, but I wanted to be restrictive. To minimize the number
-# of false positive I also filtered using an overlapping threshold of at least 50% and sequence identity
-# had to be larger than 30%. These two values are the most common thresholds I have found in the papers
-# I have consulted.
+# To run the BLAST I have used the following parameters: e-value <= 10e-10, coverage >= 50% and
+# identity >= 30%. I have read that the e-value depends on the similarity between the organisms 
+# and on the size of the database. The lower e-value, the more significant is the alignment. 
+# Some of the papers I read use higher e-value threshold, but I wanted to be more restrictive. 
+# To minimize the number of false positive I also filtered using an overlapping threshold of at 
+# least 50% and sequence identity had to be larger than 30%. These two values are the most common
+# thresholds I have found in the papers I have consulted.
 #
-# This RBH approach is useful and easy but to be more precise at the time of finding an ortolog pair it
+# This RBH approach is useful and easy but to be more precise at the time of finding an ortolog pairs it
 # would be necessary to continue the analysis. One problem of the RBH method is that we could be missing
 # orthologs pairs in those cases in which BLAST algorithm returns a paralog as the best hit in at least
 # one direction, so the ortholog wont be detected even if it was among the high-scoring hits.It would be
